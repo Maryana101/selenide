@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
+import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 
 import static com.codeborne.selenide.Condition.*;
@@ -32,19 +33,19 @@ public class AppCardDeliveryTest {
 
     }
 
-    /*
-        @Test
-        void shouldSubmitRequest(){
-            $("[data-test-id=date] input ").sendKeys(Keys.CONTROL+"a", Keys.DELETE) ;
-            $("[data-test-id=date] input").setValue(getDate(5));
-            $("[data-test-id=city] input").setValue("Омск");
-            $("[data-test-id=name] input").setValue("Тест Тестович");
-            $("[data-test-id=phone] input").setValue("+79270000000");
-            $("[data-test-id=agreement].checkbox").click();
-            $("button.button ").click();
-            $("[data-test-id=notification] .notification__title").shouldBe(visible, Duration.ofSeconds(15)).shouldBe(exactText("Успешно!"));
+    @Test
+    void shouldSubmitRequest() {
+        $("[data-test-id=date] input ").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
+        $("[data-test-id=date] input").setValue(getDate(5));
+        $("[data-test-id=city] input").setValue("Омск");
+        $("[data-test-id=name] input").setValue("Тест Тестович");
+        $("[data-test-id=phone] input").setValue("+79270000000");
+        $("[data-test-id=agreement].checkbox").click();
+        $("button.button ").click();
+        $("[data-test-id=notification] .notification__title").shouldBe(visible, Duration.ofSeconds(15)).shouldBe(exactText("Успешно!"));
 
-        }*/
+    }
+
     @Test
     void shouldNotifyAboutInvalidCity() {
         $("[data-test-id=date] input ").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
