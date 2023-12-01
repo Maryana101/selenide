@@ -17,4 +17,4 @@ install:
   - sudo apt-get install google-chrome-stable > /dev/null
 
 build_script:
-  - ./gradlew test --info  # запускаем тест, флаг --info позволяет выводить больше информации
+  - ./gradlew test --debug  # запускаем тест, флаг --info позволяет выводить больше информации
