@@ -120,7 +120,7 @@ public class AppCardDeliveryTest {
         $("[data-test-id=phone] input").setValue("+79270000000");
         $("[data-test-id=agreement].checkbox").click();
         $("[data-test-id=city] input").setValue("То");
-        $$(".menu-item").last().shouldBe(visible, exactText("Томс"));
+        $$(".menu-item").last().shouldBe(visible, exactText("Томск"));
     }
 
 }
