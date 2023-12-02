@@ -20,15 +20,6 @@ public class AppCardDeliveryTest {
     public String getDate(int cnt) {
         java.time.LocalDate targetDate = java.time.LocalDate.now().plusDays(cnt);
         String date = targetDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-
-        return date;
-
-    }
-
-    public String getDate() {
-        java.time.LocalDate targetDate = java.time.LocalDate.now();
-        String date = targetDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-
         return date;
 
     }
@@ -42,7 +33,9 @@ public class AppCardDeliveryTest {
         $("[data-test-id=phone] input").setValue("+79270000000");
         $("[data-test-id=agreement].checkbox").click();
         $("button.button ").click();
-        $("[data-test-id=notification] .notification__title").shouldBe(visible, Duration.ofSeconds(15)).shouldBe(exactText("Успешно!"));
+        $("[data-test-id=notification] .notification__content")
+                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldHave(exactText("Встреча успешно забронирована на " + getDate(5)));
 
     }
 
@@ -62,7 +55,7 @@ public class AppCardDeliveryTest {
     void shouldNotifyAboutInvalidDate() {
 
         $("[data-test-id=date] input ").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
-        $("[data-test-id=date] input").setValue(getDate());
+        $("[data-test-id=date] input").setValue(getDate(0));
         $("[data-test-id=city] input").setValue("Томск");
         $("[data-test-id=name] input").setValue("Тест Тестович");
         $("[data-test-id=phone] input").setValue("+79270000000");
@@ -121,6 +114,8 @@ public class AppCardDeliveryTest {
         $("[data-test-id=agreement].checkbox").click();
         $("[data-test-id=city] input").setValue("То");
         $$(".menu-item").last().shouldBe(visible, exactText("Томск"));
+
+
     }
 
 }
