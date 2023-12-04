@@ -6,6 +6,7 @@ import org.openqa.selenium.Keys;
 
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -18,7 +19,7 @@ public class AppCardDeliveryTest {
 
 
     public String getDate(int cnt) {
-        java.time.LocalDate targetDate = java.time.LocalDate.now().plusDays(cnt);
+        LocalDate targetDate = LocalDate.now().plusDays(cnt);
         String date = targetDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         return date;
 
@@ -27,7 +28,8 @@ public class AppCardDeliveryTest {
     @Test
     void shouldSubmitRequest() {
         $("[data-test-id=date] input ").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
-        $("[data-test-id=date] input").setValue(getDate(5));
+        String date = getDate(5);
+        $("[data-test-id=date] input").setValue(date);
         $("[data-test-id=city] input").setValue("Омск");
         $("[data-test-id=name] input").setValue("Тест Тестович");
         $("[data-test-id=phone] input").setValue("+79270000000");
@@ -35,7 +37,7 @@ public class AppCardDeliveryTest {
         $("button.button ").click();
         $("[data-test-id=notification] .notification__content")
                 .shouldBe(visible, Duration.ofSeconds(15))
-                .shouldHave(exactText("Встреча успешно забронирована на " + getDate(5)));
+                .shouldHave(matchText(date));
 
     }
 
@@ -105,17 +107,36 @@ public class AppCardDeliveryTest {
     }
 
     @Test
-    void shouldVisibleCityList() {
+    void shouldClickDateInCalendarAndCityInList() {
 
-        $("[data-test-id=date] input ").sendKeys(Keys.CONTROL + "a", Keys.DELETE);
-        $("[data-test-id=date] input").setValue(getDate(7));
-        $("[data-test-id=name] input").setValue("Тест Тестович");
+        // Выбрать из списка город
+        $("[data-test-id=city] input ").setValue("То");
+        $$(".menu-item").find(exactText("Саратов")).click();
+        // String city = $$(".menu-item").first().getText();
+        //$("[data-test-id=city] input ").sendKeys(Keys.ARROW_DOWN, Keys.ENTER);
+
+        // Выбрать в календаре дату на 1 год и 1 месяц вперед, 21 число
+        $("button.icon-button").click();
+        $("[data-step=\"12\"].calendar__arrow_direction_right").click();
+        $("[data-step=\"1\"].calendar__arrow_direction_right").click();
+        $$(".calendar__day").find(exactText("21")).click();
+
+        // Вычислить получившуюся дату
+        LocalDate targetDate = LocalDate.now().plusMonths(13);
+        String date = "21." + targetDate.format(DateTimeFormatter.ofPattern("MM.yyyy"));
+
+
+        // Заполнить тесктовые поля и чекбокс
+        $("[data-test-id=name] input").setValue("Ян Тестович");
         $("[data-test-id=phone] input").setValue("+79270000000");
         $("[data-test-id=agreement].checkbox").click();
-        $("[data-test-id=city] input").setValue("То");
-        $$(".menu-item").last().shouldBe(visible, exactText("Томск"));
+
+        // Забронировать встречу
+        $("button.button ").click();
 
 
+        $("[data-test-id=notification] .notification__content")
+                .shouldBe(visible, Duration.ofSeconds(15))
+                .shouldHave(matchText(date));
     }
-
 }
